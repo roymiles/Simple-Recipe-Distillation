@@ -1,0 +1,22 @@
+language: python
+
+os:
+  - linux
+
+dist: focal
+
+cache:
+  pip: true
+  directories: $HOME/.cache/
+
+python:
+  - "3.7"
+  - "3.8"
+  - "3.9"
+
+install:
+  - pip install setuptools --upgrade
+  - pip install .
+
+script:
+  - python -m pytest
