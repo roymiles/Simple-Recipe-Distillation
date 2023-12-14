@@ -28,12 +28,12 @@ Before training, make sure to change the `deit/config.py` entries for your data 
 
 Training is then simply run as follows:
 ```
-      python main.py --model tiny --train_student
+python main.py --model tiny --train_student
 ```
 
 Omitting the `--train_student` argument will evaluate the model using the checkpoint weights in `ckpts/ckpt_epoch_299.pth`. See `deit/main.py` for more details. 
 ```
-      python main.py --model tiny
+python main.py --model tiny
 ```
 
 ## Citation
