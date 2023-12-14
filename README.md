@@ -1,10 +1,9 @@
 # Understanding the Role of the Projector in Knowledge Distillation
-This is the official implementation of AAAI23 paper "Understanding the Role of the Projector in Knowledge Distillation"
+This is the official implementation of AAAI24 paper "Understanding the Role of the Projector in Knowledge Distillation"
 
 ## Structure
 
-The two main sets of experiments corresponding to the DeIT and ResNet results can be found in folders `deit/` and `resnet/` respectively.
-The DeIT code is based on that provided by [Co-Advise](https://github.com/OliverRensu/co-advise), while the ResNet code uses the [torchdistill](https://github.com/yoshitomo-matsubara/torchdistill) library.
+The two main sets of experiments corresponding to the DeIT and ResNet results can be found in folders `deit/` and `resnet/` respectively. The DeIT code is based on that provided by [Co-Advise](https://github.com/OliverRensu/co-advise), while the ResNet code uses the [torchdistill](https://github.com/yoshitomo-matsubara/torchdistill) library.
 
 
 ## Pretrained Models
@@ -19,7 +18,7 @@ We provide the pre-distilled model weights and logs for the DeIT experiments.
 ## Citation
 ```
 @InProceedings{miles2023understanding_AAAI,
-      title      = {A closer look at the training dynamics of knowledge distillation}, 
+      title      = {Understanding the Role of the Projector in Knowledge Distillation}, 
       author     = {Roy Miles and Krystian Mikolajczyk},
       booktitle  = {Proceedings of the 38th AAAI Conference on Artificial Intelligence (AAAI-24)},
       year       = {2023},
