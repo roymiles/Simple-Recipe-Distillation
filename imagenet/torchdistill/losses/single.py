@@ -143,12 +143,6 @@ class OurDistillationLoss(nn.Module):
         self.gn_s = torch.nn.GroupNorm(16, t_dim, eps=0.0, affine=False).cuda()
         self.gn_t = torch.nn.GroupNorm(16, t_dim, eps=0.0, affine=False).cuda()
 
-        self.embed_mix = nn.Sequential(
-            nn.Linear(s_dim, 4 * s_dim),
-            nn.ReLU(),
-            nn.Linear(4 * s_dim, s_dim)
-        ).cuda()
-
         self.ones = torch.ones(s_dim).cuda()
         # not being used at the moment
         if mode not in ('mse', 'bn_mse', 'bn_corr', 'bn_corr_4', 'log_bn_corr_4'):

@@ -79,10 +79,6 @@ class DistillationBox(nn.Module):
         self.target_teacher_pairs.extend(set_hooks(self.teacher_model, teacher_ref_model,
                                                    teacher_config, self.teacher_io_dict))
 
-        # print(self.teacher_model)
-        # print(self.student_model)
-        # exit()
-
         self.target_student_pairs.extend(set_hooks(self.student_model, student_ref_model,
                                                    student_config, self.student_io_dict))
         self.teacher_forward_proc = get_forward_proc_func(teacher_config.get('forward_proc', None))
@@ -182,6 +178,9 @@ class DistillationBox(nn.Module):
                     logger.info('Note that you are training some/all of the modules in the teacher model')
                     trainable_module_list.append(self.teacher_model)
 
+            # add the projector to trainable parameters
+            trainable_module_list.append(self.criterion.term_dict['it_loss'][0].embed)
+                    
             filters_params = optim_config.get('filters_params', True)
             self.optimizer = \
                 get_optimizer(trainable_module_list, optim_config['type'], optim_params_config, filters_params)
@@ -295,13 +294,6 @@ class DistillationBox(nn.Module):
             if self.teacher_updatable and isinstance(cache_file_paths, (list, tuple)) is not None else None
         extracted_teacher_io_dict = extract_io_dict(self.teacher_io_dict, self.device)
 
-        # print(extracted_teacher_io_dict.keys())
-        # exit()
-        
-        # extracted_teacher_io_dict[SELF_MODULE_PATH]['output'] = teacher_outputs
-        # if isinstance(self.teacher_model, AuxiliaryModelWrapper):
-        #     self.teacher_model.secondary_forward(extracted_teacher_io_dict)
-
         update_io_dict(extracted_teacher_io_dict, extract_io_dict(self.teacher_io_dict, self.device))
         # Write cache files if output file paths (cache_file_paths) are given
         if isinstance(cache_file_paths, (list, tuple)):
@@ -330,13 +322,7 @@ class DistillationBox(nn.Module):
         update_io_dict(extracted_student_io_dict, extract_io_dict(self.student_io_dict, self.device))
         io_dict = {'teacher': extracted_teacher_io_dict, 'student': extracted_student_io_dict}
 
-        # exit("Njnjn")
-        # roy: pass in models as well so that we can call layer 4
-        # print(self.criterion.__name__)
-        # exit()
-        # total_loss = self.criterion(io_dict, org_loss_dict, targets, model_s=self.student_model, model_t=self.teacher_model)
         total_loss = self.criterion(io_dict, org_loss_dict, targets)
-
         return total_loss
 
     def update_params(self, loss, **kwargs):

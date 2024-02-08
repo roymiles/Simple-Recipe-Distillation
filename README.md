@@ -36,6 +36,14 @@ Omitting the `--train_student` argument will evaluate the model using the checkp
 python main.py --model tiny
 ```
 
+## ImageNet
+
+For training a ResNet18 student using a ResNet34 teacher, we use the `torchdistill` library.
+```
+cd imagenet
+python image_classification.py --config configs/ilsvrc2012/ours/res3418.yaml --log log/output.txt
+```
+
 ## Citation
 ```
 @InProceedings{miles2023understanding_AAAI,
