@@ -140,10 +140,9 @@ class OurDistillationLoss(nn.Module):
         self.embed = nn.Linear(s_dim, t_dim).cuda()
         self.bn_s = torch.nn.BatchNorm1d(t_dim, eps=0.0001, affine=False).cuda()
         self.bn_t = torch.nn.BatchNorm1d(t_dim, eps=0.0001, affine=False).cuda()
-        self.gn_s = torch.nn.GroupNorm(16, t_dim, eps=0.0, affine=False).cuda()
-        self.gn_t = torch.nn.GroupNorm(16, t_dim, eps=0.0, affine=False).cuda()
+        # self.gn_s = torch.nn.GroupNorm(16, t_dim, eps=0.0, affine=False).cuda()
+        # self.gn_t = torch.nn.GroupNorm(16, t_dim, eps=0.0, affine=False).cuda()
 
-        self.ones = torch.ones(s_dim).cuda()
         # not being used at the moment
         if mode not in ('mse', 'bn_mse', 'bn_corr', 'bn_corr_4', 'log_bn_corr_4'):
             raise ValueError('mode `{}` is not expected'.format(mode))
@@ -157,9 +156,7 @@ class OurDistillationLoss(nn.Module):
         f_s_norm = self.bn_s(f_s)
         f_t_norm = self.bn_t(f_t) 
 
-        c_st = torch.einsum('bx,bx->x', f_s_norm, f_t_norm) / n
-        c_diff = c_st - torch.ones_like(c_st)
-
+        c_diff = f_s_norm - f_t_norm
         c_diff = torch.abs(c_diff) 
         c_diff = c_diff.pow(4.0)
 
@@ -171,8 +168,18 @@ class OurDistillationLoss(nn.Module):
         z_s = student_io_dict['layer4']['output'].mean(-1).mean(-1)  # Bx512
         z_t = teacher_io_dict['layer4']['output'].mean(-1).mean(-1)  # Bx512
 
-        l_corr = 2.0 * self.forward_loss(z_s, z_t)
-        total_loss = l_corr
+        # Rep loss
+        l_rep = 2.0 * self.forward_loss(z_s, z_t)
+
+        # Logit loss
+        y_s = student_io_dict['fc']['output']
+        y_t = teacher_io_dict['fc']['output']
+        T = 1.0
+        p_s = F.log_softmax(y_s/T, dim=1)
+        p_t = F.softmax(y_t/T, dim=1)
+        l_logit = F.kl_div(p_s, p_t, size_average=False) * (T**2) / y_s.shape[0]
+
+        total_loss = l_rep + l_logit
 
         return total_loss
 

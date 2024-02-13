@@ -44,6 +44,14 @@ cd imagenet
 python image_classification.py --config configs/ilsvrc2012/ours/res3418.yaml --log log/output.txt
 ```
 
+## Pretrained Models
+
+We provide the pre-distilled model weights and logs. This reproduced experiment has an accuracy **higher** than that reported in the original paper.
+
+| model | acc@1 | url |
+| --- | --- | --- |
+| resnet18 | 71.87 | [model](https://drive.google.com/drive/folders/1P5mePA0vwWkGqzJCiExfVzpqZEpEDEEz?usp=sharing) |
+
 ## Citation
 ```
 @InProceedings{miles2023understanding_AAAI,
